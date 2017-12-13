@@ -1,0 +1,28 @@
+{
+  "name": "tweelings",
+  "version": "1.0.0",
+  "description": "API to know what the people feel about something based on Twitter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuisMesa/TweelingsAPI.git"
+  },
+  "keywords": [
+    "Node",
+    "Twitter",
+    "Watson"
+  ],
+  "author": "LuisMesa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuisMesa/TweelingsAPI/issues"
+  },
+  "homepage": "https://github.com/LuisMesa/TweelingsAPI#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "server": "^1.0.12"
+  }
+}
