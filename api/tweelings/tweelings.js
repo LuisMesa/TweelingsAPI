@@ -1,23 +1,44 @@
 const server = require('server');
 const { get, post } = server.router;
 const { render, json } = server.reply;
+const {TwitterClient, getTweets, getTweetsComplete }= require('../../config/Twitter');
+const {tone_analyzer, analyseTone, customOverview} = require('../../config/Watson');
 
-function getAll(ctx) {
-  const array = [
-    {
-      tweets: [
-        { src: 'https://pbs.twimg.com/profile_images/833525803266740224/rOXaAWPb_normal.jpg', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate'},
-        { src: 'https://pbs.twimg.com/profile_images/833525803266740224/rOXaAWPb_normal.jpg', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate'},
-        { src: 'https://pbs.twimg.com/profile_images/833525803266740224/rOXaAWPb_normal.jpg', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate'}
-
-      ]
-    }
-  ]
-  return json(array);
+async function getFav(ctx) {
+  // const tweets = await getTweets('Donald Trump');
+  const fs = require('fs');
+  const obj = JSON.parse(fs.readFileSync('./api/tweelings/favTweelings.json', 'utf8'));
+  
+  return json(obj);
 }
 
-const thing1 = {
-  all: get('/tweelings', getAll)
+async function getTweetsByQuery(ctx) {
+  const query = ctx.query.query;
+  const tweets = await getTweetsComplete(query);
+  return json(tweets);
 }
 
-module.exports = thing1;
+async function getTweeling(ctx) {
+  const query = ctx.query.query;
+  const tweets = await getTweets(query);
+
+  const wholeText = tweets.map(tweet=>tweet.content+'./n')
+
+  const tone = await analyseTone(wholeText);
+  const tweeling = {
+    query,
+    tweets,
+    tones:tone.document_tone.tones,
+    tone,
+    wholeText
+  }
+  return json(tweeling);
+}
+
+const tweelings = [
+  get('/favTweelings', getFav),
+  get('/tweetsByQuery', getTweetsByQuery),
+  get('/tweeling', getTweeling)
+]
+
+module.exports = tweelings;
