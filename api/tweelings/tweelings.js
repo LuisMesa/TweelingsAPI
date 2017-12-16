@@ -20,7 +20,7 @@ async function getTweetsByQuery(ctx) {
 async function getTweeling(ctx) {
   const query = ctx.query.query;
   const tweets = await getTweets(query);
-  const wholeText = tweets.map(tweet=>tweet.content+'./n')
+  const wholeText = tweets.reduce((text, tweet)=> text + tweet.content+ '\n', '');
   const tone = await analyseTone(wholeText);
   const tweeling = {
     query,
