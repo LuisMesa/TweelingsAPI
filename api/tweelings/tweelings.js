@@ -8,7 +8,6 @@ async function getFav(ctx) {
   // const tweets = await getTweets('Donald Trump');
   const fs = require('fs');
   const obj = JSON.parse(fs.readFileSync('./api/tweelings/favTweelings.json', 'utf8'));
-  
   return json(obj);
 }
 
@@ -21,9 +20,7 @@ async function getTweetsByQuery(ctx) {
 async function getTweeling(ctx) {
   const query = ctx.query.query;
   const tweets = await getTweets(query);
-
   const wholeText = tweets.map(tweet=>tweet.content+'./n')
-
   const tone = await analyseTone(wholeText);
   const tweeling = {
     query,
